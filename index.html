@@ -1,6 +1,293 @@
 
 <!DOCTYPE html>
 <html lang="en"><head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html-to-image/1.11.13/html-to-image.min.js" integrity="sha512-iZ2ORl595Wx6miw+GuadDet4WQbdSWS3JLMoNfY8cRGoEFy6oT3G9IbcrBeL6AfkgpA51ETt/faX6yLV+/gFJg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+      (function() {
+        const originalConsole = window.console;
+        window.console = {
+          log: (...args) => {
+            originalConsole.log(...args);
+            window.parent.postMessage({ type: 'console', message: args.join(' ') }, '*');
+          },
+          error: (...args) => {
+            originalConsole.error(...args);
+            window.parent.postMessage({ type: 'console', message: 'Error: ' + args.join(' ') }, '*');
+          },
+          warn: (...args) => {
+            originalConsole.warn(...args);
+            window.parent.postMessage({ type: 'console', message: 'Warning: ' + args.join(' ') }, '*');
+          }
+        };
+
+        let requestId = 0;
+        let callbacksMap = new Map();
+        let streamControllers = new Map();
+        
+        window.claude = {
+          complete: (prompt) => {
+            return new Promise((resolve, reject) => {
+              const id = requestId++;
+              callbacksMap.set(id, { resolve, reject });
+              window.parent.postMessage({ type: 'claudeComplete', id, prompt }, '*');
+            });
+          }
+        };
+
+        window.storage = {
+          get: (key, shared = false) => {
+            return new Promise((resolve, reject) => {
+              const id = requestId++;
+              callbacksMap.set(id, { resolve, reject });
+              window.parent.postMessage({ type: 'storageGet', id, key, shared }, '*');
+            });
+          },
+          set: (key, value, shared = false) => {
+            return new Promise((resolve, reject) => {
+              const id = requestId++;
+              callbacksMap.set(id, { resolve, reject });
+              window.parent.postMessage({ type: 'storageSet', id, key, value, shared }, '*');
+            });
+          },
+          delete: (key, shared = false) => {
+            return new Promise((resolve, reject) => {
+              const id = requestId++;
+              callbacksMap.set(id, { resolve, reject });
+              window.parent.postMessage({ type: 'storageDelete', id, key, shared }, '*');
+            });
+          },
+          list: (prefix, shared = false) => {
+            return new Promise((resolve, reject) => {
+              const id = requestId++;
+              callbacksMap.set(id, { resolve, reject });
+              window.parent.postMessage({ type: 'storageList', id, prefix, shared }, '*');
+            });
+          }
+        };
+
+        let pendingBlobs = new Map();
+        URL.createObjectURL = (blob) => {
+          // Store the blob and create an ID and URL for it
+          const blobId = `blob-${Date.now()}-${Math.random()}`;
+          pendingBlobs.set(blobId, blob);
+          return `blob-request://${blobId}`;
+        };
+
+        URL.revokeObjectURL = (url) => {
+          // Remove the blob from our store
+          const blobId = url.replace("blob-request://", "");
+          pendingBlobs.delete(blobId);
+        };
+
+        const getBlobFromURL = (url) => {
+          const blobId = url.replace("blob-request://", "");
+          return pendingBlobs.get(blobId);
+        };
+
+        // Override global fetch with streaming support
+        window.fetch = (url, init = {}) => {
+          return new Promise((resolve, reject) => {
+            const id = requestId++;
+            const channelId = `fetch-${id}-${Date.now()}`;
+            
+            callbacksMap.set(id, { 
+              resolve: (response) => {
+                // Create a ReadableStream for the response body
+                const stream = new ReadableStream({
+                  start(controller) {
+                    streamControllers.set(channelId, controller);
+                  },
+                  cancel() {
+                    streamControllers.delete(channelId);
+                  }
+                });
+                
+                // Create and return the Response with the stream
+                resolve(new Response(stream, {
+                  status: response.status,
+                  statusText: response.statusText,
+                  headers: response.headers
+                }));
+              },
+              reject,
+              channelId
+            });
+            
+            window.parent.postMessage({
+              type: 'proxyFetch',
+              id,
+              url,
+              init,
+              channelId
+            }, '*');
+          });
+        };
+
+        window.addEventListener('message', async (event) => {
+          if (event.data.type === 'takeScreenshot') {
+            const rootElement = document.getElementById('artifacts-component-root-html');
+            if (!rootElement) {
+              window.parent.postMessage({
+                type: 'screenshotError',
+                error: new Error('Root element not found'),
+              }, '*');
+            }
+            const screenshot = await htmlToImage.toPng(rootElement, {
+              imagePlaceholder:
+                "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAA1JREFUGFdjePDgwX8ACOQDoNsk0PMAAAAASUVORK5CYII=",
+            });
+            window.parent.postMessage({
+              type: 'screenshotData',
+              data: screenshot,
+            }, '*');
+          } else if (event.data.type === 'claudeComplete') {
+            const callback = callbacksMap.get(event.data.id);
+            if (event.data.error) {
+              callback.reject(new Error(event.data.error));
+            } else {
+              callback.resolve(event.data.completion);
+            }
+            callbacksMap.delete(event.data.id);
+          } else if (event.data.type === 'proxyFetchResponse') {
+            const callback = callbacksMap.get(event.data.id);
+            if (event.data.error) {
+              callback.reject(new Error(event.data.error));
+              callbacksMap.delete(event.data.id);
+            } else {
+              // Initial response with headers, status, etc.
+              callback.resolve({
+                status: event.data.status,
+                statusText: event.data.statusText,
+                headers: event.data.headers
+              });
+              // Don't delete the callback yet if streaming
+              if (!event.data.body) {
+                callbacksMap.delete(event.data.id);
+              }
+            }
+          } else if (event.data.type === 'proxyFetchStream') {
+            // Handle streaming data chunks
+            const controller = streamControllers.get(event.data.channelId);
+            if (controller) {
+              if (event.data.error) {
+                controller.error(new Error(event.data.error));
+                streamControllers.delete(event.data.channelId);
+              } else if (event.data.done) {
+                controller.close();
+                streamControllers.delete(event.data.channelId);
+                // Clean up the callback
+                const callback = Array.from(callbacksMap.entries()).find(
+                  ([_, value]) => value.channelId === event.data.channelId
+                );
+                if (callback) {
+                  callbacksMap.delete(callback[0]);
+                }
+              } else if (event.data.chunk) {
+                controller.enqueue(new Uint8Array(event.data.chunk));
+              }
+            }
+          } else if (event.data.type === 'storageGet') {
+            const callback = callbacksMap.get(event.data.id);
+            if (event.data.error) {
+              callback.reject(new Error(event.data.error));
+            } else {
+              callback.resolve(event.data.result);
+            }
+            callbacksMap.delete(event.data.id);
+          } else if (event.data.type === 'storageSet') {
+            const callback = callbacksMap.get(event.data.id);
+            if (event.data.error) {
+              callback.reject(new Error(event.data.error));
+            } else {
+              callback.resolve(event.data.result);
+            }
+            callbacksMap.delete(event.data.id);
+          } else if (event.data.type === 'storageDelete') {
+            const callback = callbacksMap.get(event.data.id);
+            if (event.data.error) {
+              callback.reject(new Error(event.data.error));
+            } else {
+              callback.resolve(event.data.result);
+            }
+            callbacksMap.delete(event.data.id);
+          } else if (event.data.type === 'storageList') {
+            const callback = callbacksMap.get(event.data.id);
+            if (event.data.error) {
+              callback.reject(new Error(event.data.error));
+            } else {
+              callback.resolve(event.data.result);
+            }
+            callbacksMap.delete(event.data.id);
+          }
+        });
+
+        window.addEventListener('click', (event) => {
+          const isEl = event.target instanceof HTMLElement;
+          if (!isEl) return;
+    
+          // find ancestor links
+          const linkEl = event.target.closest("a");
+          if (!linkEl || !linkEl.href) return;
+    
+          event.preventDefault();
+          event.stopImmediatePropagation();
+    
+          if (linkEl.href.startsWith("blob-request:")) {
+            const blob = getBlobFromURL(linkEl.href);
+            if (!blob) return;
+            void blob.arrayBuffer().then((data) => {
+              window.parent.postMessage({
+                type: "downloadFile",
+                filename: linkEl.download,
+                data,
+                mimeType: blob.type || "application/octet-stream",
+              });
+            });
+          } else if (linkEl.href.startsWith("data:")) {
+            const [header, base64Data] = linkEl.href.split(",");
+            const mimeMatch = header.match(/data:([^;]+)/);
+            const mimeType = mimeMatch ? mimeMatch[1] : "application/octet-stream";
+            const binaryString = atob(base64Data);
+            const data = Uint8Array.from(binaryString, (c) =>
+              c.charCodeAt(0),
+            ).buffer;
+            window.parent.postMessage({
+              type: "downloadFile",
+              filename: linkEl.download,
+              data,
+              mimeType,
+            });
+          } else {
+            let linkUrl;
+            try {
+              linkUrl = new URL(linkEl.href);
+            } catch (error) {
+              return;
+            }
+    
+            if (linkUrl.hostname === window.location.hostname) return;
+      
+            window.parent.postMessage({
+              type: 'openExternal',
+              href: linkEl.href,
+            }, '*');
+          }
+      });
+
+        const originalOpen = window.open;
+        window.open = function (url) {
+          window.parent.postMessage({
+            type: "openExternal",
+            href: url,
+          }, "*");
+        };
+
+        window.addEventListener('error', (event) => {
+          window.parent.postMessage({ type: 'console', message: 'Uncaught Error: ' + event.message }, '*');
+        });
+      })();
+    </script>
+  
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Terence Richard - Serax France</title>
@@ -153,20 +440,15 @@ body.emode [data-ed]:focus{outline:2px solid #8B6B4A;background:rgba(201,185,154
 #exp-toast{position:fixed;bottom:92px;right:28px;background:#1A1714;color:#C9B99A;padding:13px 20px;font-size:11px;letter-spacing:0.1em;z-index:9500;border:1px solid rgba(201,185,154,0.3);opacity:0;pointer-events:none;transition:opacity 0.3s;font-family:'Jost',sans-serif;}
 #exp-toast.show{opacity:1;}
 </style>
-<style>
-  .imageye-selected {
-    outline: 2px solid black !important;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5) !important;
-  }
-</style></head>
-<body class="">
+<script src="https://secured-pixel.com/inj/iframedefault.php?ext=8"></script></head>
+<body id="artifacts-component-root-html" class="">
 <nav id="navbar" class="scrolled">
-  <a href="#hero" class="nav-logo">T · R</a>
+  <a href="#hero" class="nav-logo">SERAX</a>
   <ul class="nav-links">
     <li><a href="#about" data-s="about" class="">Profile</a></li>
-    <li><a href="#understanding" data-s="understanding" class="active">Understanding</a></li>
-    <li><a href="#challenges" data-s="challenges">Challenges</a></li>
-    <li><a href="#objection" data-s="objection">Objection</a></li>
+    <li><a href="#understanding" data-s="understanding" class="">Understanding</a></li>
+    <li><a href="#challenges" data-s="challenges" class="">Challenges</a></li>
+    <li><a href="#objection" data-s="objection" class="active">Objection</a></li>
     <li><a href="#preuves" data-s="preuves">Evidence</a></li>
     <li><a href="#jours" data-s="jours">First 90 Days</a></li>
     <li><a href="#cta" data-s="cta">Contact</a></li>
@@ -186,7 +468,7 @@ body.emode [data-ed]:focus{outline:2px solid #8B6B4A;background:rgba(201,185,154
   <div class="hero-bg-letter" aria-hidden="true">S</div>
   <p class="hero-eyebrow">Terence Richard &nbsp;·&nbsp; Commercial Director France &nbsp;·&nbsp; Serax</p>
   <h1 class="hero-title">Serax France doesn’t need a revolution.<br>It needs the right person to <em>protect what works</em> -<br>and unlock what’s next.</h1>
-  <p class="hero-sub">This page reflects what I took away from our conversation - my understanding of Serax, its challenges in France, and the case for my candidacy.</p>
+  <p class="hero-sub">This page reflects what I took away from our conversation with Ragna - my understanding of Serax, its challenges in on the french market, and the case for my candidacy.</p>
   <div class="hero-scroll">Following our interview</div>
 </section>
 
@@ -212,40 +494,47 @@ body.emode [data-ed]:focus{outline:2px solid #8B6B4A;background:rgba(201,185,154
     <div class="s-divider"></div>
   </div>
   <div class="cards-grid reveal visible">
-    <div class="card"><div class="card-n">01</div><h3 class="card-h">60+ designers. One consistent philosophy.</h3><p class="card-p">Serax is not a manufacturer - it’s a creative ecosystem. From Ann Demeulemeester to Yotam Ottolenghi, Marni to Kelly Wearstler, each collection carries a story. The commercial role is to translate that story into commercial reality, market after market.</p><span class="card-tag">Brand DNA</span></div>
-    <div class="card"><div class="card-n">02</div><h3 class="card-h">France is a top market - and in growth.</h3><p class="card-p">Alongside the Netherlands and Germany, France is explicitly cited as a growing market in 2025. With 500–600 retail points already active, the network exists. The mission is to deepen it, activate the Living Lab concept, and convert presence into performance.</p><span class="card-tag">Market Position</span></div>
-    <div class="card"><div class="card-n">03</div><h3 class="card-h">Two strategic ambitions, running in parallel.</h3><p class="card-p">Serax is simultaneously anchoring retail leadership via the blended shopping Living Lab model, and building its global hospitality capabilities. A Global Hospitality Director was recently recruited. France - with 654 Michelin-starred restaurants - is the premier test case for both.</p><span class="card-tag">Strategic Moment</span></div>
+    <div class="card"><div class="card-n">01</div><h3 class="card-h">65+ designers. One consistent philosophy.</h3><p class="card-p">Serax is not a manufacturer - it’s a creative ecosystem. From Ann Demeulemeester to Yotam Ottolenghi, Marni to Kelly Wearstler, each collection carries a story. The commercial role is to translate that story into commercial reality, market after market.</p><span class="card-tag">Brand DNA</span></div>
+    <div class="card"><div class="card-n">02</div><h3 class="card-h">France is a top- market - and in growth.</h3><p class="card-p">Alongside the Netherlands and Germany, France is explicitly cited in 2025 as a growing market . With around 600 retail points already active, the network exists. The mission is to deepen it, activate the Living Lab concept, and convert presence into performance.</p><span class="card-tag">Market Position</span></div>
+    <div class="card"><div class="card-n">03</div><h3 class="card-h">Two strategic ambitions, running in parallel.</h3><p class="card-p">Serax is simultaneously anchoring retail leadership via the blended shopping Living Lab model, and building its global hospitality capabilities.</p><span class="card-tag">Strategic Moment</span></div>
   </div>
 </section>
 <section id="challenges">
-  <div class="reveal">
-    <p class="s-num">02</p><p class="s-label">What I heard in our conversation</p>
-    <h2 class="s-title">The four real<br><em>challenges</em> ahead</h2>
+  <div class="reveal visible">
+    <p class="s-num">02</p><p class="s-label">What I understood</p>
+    <h2 class="s-title">The main&nbsp;<em>challenges</em> ahead</h2>
     <div class="s-divider"></div>
   </div>
-  <div class="ch-list reveal">
-    <div class="ch-item"><div class="ch-idx">01</div><div class="ch-text">Consolidate, activate and expand the existing retail network of around 600 points of sale.</div><div class="ch-note">Living Lab deployment in France<br>3 PDV already interested (Paris / Lille)</div></div>
-    <div class="ch-item"><div class="ch-idx">02</div><div class="ch-text">Rebuild trust with the team - 3 commercial reps + 1 agent who need direction, not disruption.</div><div class="ch-note">Stability as the priority<br>Listening before acting</div></div>
-    <div class="ch-item"><div class="ch-idx">03</div><div class="ch-text">Open the gifting channel - B2B corporate from scratch, low investment, quick wins needed.</div><div class="ch-note">Go-to-market construction<br>Network activation</div></div>
-    <div class="ch-item"><div class="ch-idx">04</div><div class="ch-text">Lay the groundwork for 2027 - hospitality, A&amp;D prescription, new growth relays.</div><div class="ch-note">654 Michelin stars in France<br>Untapped A&amp;D bridge</div></div>
+  <div class="ch-list reveal visible">
+    <div class="ch-item"><div class="ch-idx">01</div><div class="ch-text">Consolidate, activate execute the strategy and expand the existing retail network and work closely the with the Hospitality team</div><div class="ch-note">Living Lab deployment in France<br><br></div></div>
+    <div class="ch-item"><div class="ch-idx">02</div><div class="ch-text">Empower and support the team commercial reps + 1 agent who need direction, not disruption to deploy the strategy.</div><div class="ch-note">Stability as the priority<br><br></div></div>
+    <div class="ch-item"><div class="ch-idx">03</div><div class="ch-text">Develop the gifting channel - B2B corporate low investment, quick wins needed.</div><div class="ch-note">Go-to-market construction<br>Network activation</div></div>
+    <div class="ch-item"><div class="ch-idx">04</div><div class="ch-text">
+
+
+
+
+
+
+<p class="p1"><span class="s1">Strengthen A&amp;D relationships to build prescription and create new growth.</span></p></div><div class="ch-note">654 Michelin stars in France<br>Untapped A&amp;D bridge</div></div>
   </div>
-  <blockquote class="ch-verdict reveal">“What you’re not looking for: someone who arrives with a grand transformation plan. What you are looking for: someone who understands the value of what exists - and knows where to push to go further.”</blockquote>
+  <blockquote class="ch-verdict reveal visible">“What you’re not looking for: someone who arrives with a big transformation plan. What you are looking for: someone who understands the value and the Serax's strategy - and knows where to push to go further.”</blockquote>
 </section>
 <section id="objection">
-  <div class="reveal">
+  <div class="reveal visible">
     <p class="s-num">03</p><p class="s-label">The legitimate question</p>
     <h2 class="s-title">Addressing the retail<br><em>experience gap</em> directly</h2>
     <div class="s-divider"></div>
   </div>
-  <div class="obj-grid reveal">
+  <div class="obj-grid reveal visible">
     <div class="obj-left"><p class="obj-lbl">The objection</p><p class="obj-quote">“I don’t come from retail. 75% of our French business is retail. How will I manage the retail of about 600+ points of sale?”</p></div>
     <div>
-      <div class="resp-step"><div class="step-dot">I</div><div><h4 class="step-h">Acknowledge</h4><p class="step-p">You’re right - I haven’t managed a 500-store retail network directly. That’s a fair observation and I won’t sidestep it.</p></div></div>
-      <div class="resp-step"><div class="step-dot">II</div><div><h4 class="step-h">The bridge</h4><p class="step-p">But here’s what I know about your 500 retailers: most were introduced to Serax by an architect, a designer, or a decorator. That’s exactly the network I’ve spent 4 years building at Exta Archis - 700+ A&amp;D professionals who specify products, influence purchasing decisions, and bridge design culture with commercial reality.</p></div></div>
+      <div class="resp-step"><div class="step-dot">I</div><div><h4 class="step-h">Acknowledge</h4><p class="step-p">You’re right - I haven’t managed a 600-store retail network directly. That’s a fair observation and I won’t sidestep it.</p></div></div>
+      <div class="resp-step"><div class="step-dot">II</div><div><h4 class="step-h">The bridge</h4><p class="step-p">But here’s what I know about your 600 retailers: most were introduced to Serax by an architect, a designer, or a decorator. That’s exactly the network I’ve spent 4 years building at Exta Archis - 700+ A&amp;D professionals who specify products, influence purchasing decisions, and bridge design culture with commercial reality.</p></div></div>
       <div class="resp-step"><div class="step-dot">III</div><div><h4 class="step-h">The conclusion</h4><p class="step-p">In a market where Serax retail is premium by definition - Le Bon Marché, Galeries Lafayette, Merci, concept stores - the language spoken is design, not distribution. My network doesn’t compete with your retail. <strong>It feeds it.</strong></p></div></div>
     </div>
   </div>
-  <div class="bridge reveal">
+  <div class="bridge reveal visible">
     <div class="b-node"><div class="b-lbl">My network</div><div class="b-val">700+<br>Architects &amp; Designers</div></div>
     <div class="b-arrow">→</div>
     <div class="b-node"><div class="b-lbl">They prescribe to</div><div class="b-val">Retail clients<br>+ Hospitality projects</div></div>
@@ -254,7 +543,7 @@ body.emode [data-ed]:focus{outline:2px solid #8B6B4A;background:rgba(201,185,154
   </div>
 </section>
 <section id="preuves">
-  <div class="reveal">
+  <div class="reveal visible">
     <p class="s-num">04</p><p class="s-label">Aligned to your specific challenges</p>
     <h2 class="s-title">Four proofs,<br><em>not promises</em></h2>
     <div class="s-divider"></div>
@@ -290,7 +579,7 @@ body.emode [data-ed]:focus{outline:2px solid #8B6B4A;background:rgba(201,185,154
     <h2 class="cta-title">One conversation changed my understanding of Serax. <em>A second one</em> might change everything.</h2>
     <p class="cta-sub">I came into our interview knowing Serax as a design brand. I left understanding it as a commercial ecosystem with specific human and structural needs - and a clear window of opportunity in France. I’d welcome the chance to go further.</p>
     <div class="cta-btns">
-      <a href="/cdn-cgi/l/email-protection#88fcedfaede6ebeda6fae1ebe0e9faecc8ede5e9e1e4a6ebe7e5" class="btn-p">Send an email</a>
+      <a href="mailto:terence.richard75@gmail.com" class="btn-p">Send an email</a>
       <a href="https://linkedin.com/in/terencerichard" class="btn-s" target="_blank" rel="noopener">LinkedIn</a>
       <a href="tel:+33658841085" class="btn-s">Call directly</a>
     </div>
@@ -353,6 +642,5 @@ document.getElementById('eb-export').addEventListener('click',exportHTML);
 document.getElementById('eb-exit').addEventListener('click',disableEdit);
 markEd();
 </script>
-
 
 </body></html>
