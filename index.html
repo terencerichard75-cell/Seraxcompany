@@ -285,7 +285,7 @@ body.emode [data-ed]:focus{outline:2px solid #8B6B4A;background:rgba(201,185,154
     <h2 class="cta-title">One conversation changed my understanding of Serax. <em>A second one</em> might change everything.</h2>
     <p class="cta-sub">I came into our interview knowing Serax as a design brand. I left understanding it as a commercial ecosystem with specific human and structural needs - and a clear window of opportunity in France. I&rsquo;d welcome the chance to go further.</p>
     <div class="cta-btns">
-      <a href="/cdn-cgi/l/email-protection#5c28392e39323f39722e353f343d2e386b691c3b313d3530723f3331" class="btn-p">Send an email</a>
+      <a href="mailto:terence.richard75@gmail.com" class="btn-p">Send an email</a>
       <a href="https://linkedin.com/in/terencerichard" class="btn-s" target="_blank" rel="noopener">LinkedIn</a>
       <a href="tel:+33658841085" class="btn-s">Call directly</a>
     </div>
@@ -317,7 +317,7 @@ body.emode [data-ed]:focus{outline:2px solid #8B6B4A;background:rgba(201,185,154
   </div>
 </div>
 <div id="exp-toast">Fichier exporte !</div>
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script>
 var navbar=document.getElementById('navbar');
 window.addEventListener('scroll',function(){navbar.classList.toggle('scrolled',window.scrollY>40);});
 var hamburger=document.getElementById('hamburger'),mobileMenu=document.getElementById('mobileMenu');
@@ -361,4 +361,9 @@ document.getElementById('epw-btn').addEventListener('click',function(){
 });
 epw.addEventListener('keydown',function(e){if(e.key==='Enter')document.getElementById('epw-btn').click();if(e.key==='Escape'){loginEl.classList.remove('show');epw.value='';document.getElementById('epw-err').style.display='none';}});
 loginEl.addEventListener('click',function(e){if(e.target===loginEl){loginEl.classList.remove('show');epw.value='';document.getElementById('epw-err').style.display='none';}});
-document.getElementById('e
+document.getElementById('eb-export').addEventListener('click',exportHTML);
+document.getElementById('eb-exit').addEventListener('click',disableEdit);
+markEd();
+</script>
+</body>
+</html>
