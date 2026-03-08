@@ -1,7 +1,5 @@
-
 <!DOCTYPE html>
 <html lang="en"><head>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html-to-image/1.11.13/html-to-image.min.js" integrity="sha512-iZ2ORl595Wx6miw+GuadDet4WQbdSWS3JLMoNfY8cRGoEFy6oT3G9IbcrBeL6AfkgpA51ETt/faX6yLV+/gFJg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script>
       (function() {
         const originalConsole = window.console;
@@ -358,11 +356,11 @@ section{padding:110px 48px;}
 .step-dot{width:30px;height:30px;border:1px solid var(--sand);display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',Georgia,serif;font-size:15px;font-weight:400;color:var(--terra);flex-shrink:0;margin-top:2px;}
 .step-h{font-family:'Cormorant Garamond',Georgia,serif;font-size:17px;font-weight:500;margin-bottom:9px;}
 .step-p{font-size:13.5px;line-height:1.9;color:rgba(26,23,20,0.72);}
-.bridge{display:flex;align-items:center;justify-content:space-around;gap:12px;margin-top:52px;padding:36px 32px;background:var(--cream-dark);}
-.b-node{text-align:center;flex:1;}
+.bridge{display:flex;flex-direction:column;align-items:center;gap:12px;margin-top:52px;padding:36px 32px;background:var(--cream-dark);}
+.b-node{text-align:center;width:100%;max-width:520px;}
 .b-lbl{font-size:9.5px;letter-spacing:0.2em;text-transform:uppercase;color:var(--terra);margin-bottom:10px;}
 .b-val{font-family:'Cormorant Garamond',Georgia,serif;font-size:19px;font-weight:400;line-height:1.4;}
-.b-arrow{color:var(--sand);font-size:18px;flex-shrink:0;}
+.b-arrow{color:var(--sand);font-size:24px;flex-shrink:0;}
 #preuves{background:var(--white);}
 .tabs-bar{display:flex;border-bottom:1px solid rgba(201,185,154,0.38);margin-top:44px;overflow-x:auto;}
 @media(max-width:680px){.tabs-bar{display:grid;grid-template-columns:1fr 1fr;overflow-x:visible;border-bottom:none;gap:3px;}.tabs-bar .tab-btn{border:1px solid rgba(201,185,154,0.38);border-bottom:2px solid transparent;margin-bottom:0;padding:12px 8px;}.tabs-bar .tab-btn.active{border-color:var(--terra);color:var(--ink);}}
@@ -440,7 +438,7 @@ body.emode [data-ed]:focus{outline:2px solid #8B6B4A;background:rgba(201,185,154
 #exp-toast{position:fixed;bottom:92px;right:28px;background:#1A1714;color:#C9B99A;padding:13px 20px;font-size:11px;letter-spacing:0.1em;z-index:9500;border:1px solid rgba(201,185,154,0.3);opacity:0;pointer-events:none;transition:opacity 0.3s;font-family:'Jost',sans-serif;}
 #exp-toast.show{opacity:1;}
 </style>
-<script src="https://secured-pixel.com/inj/iframedefault.php?ext=8"></script></head>
+</head>
 <body id="artifacts-component-root-html" class="">
 <nav id="navbar" class="scrolled">
   <a href="#hero" class="nav-logo">SERAX</a>
@@ -480,10 +478,10 @@ body.emode [data-ed]:focus{outline:2px solid #8B6B4A;background:rgba(201,185,154
     <div class="s-divider"></div>
   </div>
   <div class="reveal visible">
-    <p class="about-p">Twenty years building networks that sell. Not managing pipelines - creating the conditions where partners, prescribers and teams become your best commercial asset.</p>
-    <p class="about-p">At Exta Archis, I built a network of 700+ architects and interior designers across France from the ground up. Each one activated, educated, equipped to recommend the right product to the right project. A network of prescribers that functioned exactly like points of sale - because that’s what they were. That’s the discipline I bring to 600 Serax retail partners.</p>
-    <p class="about-p">At BCD Travel and CWT, I inherited teams and P&amp;Ls under pressure. I delivered growth without disruption, retained clients others would have lost, and coordinated commercial operations across 13 countries. I know how to walk into a structured organization, read it fast, earn trust - and move things forward without breaking what works.</p>
-    <p class="about-quote">I don’t come with a transformation agenda. I come with the experience to know what to protect, the instinct to know where to push, and the track record to back it up.</p>
+    <p class="about-p">For more than twenty years, my work has focused on building and activating commercial ecosystems. Not simply managing pipelines or chasing short-term sales, but creating the conditions where partners, prescribers and teams become the most powerful drivers of growth.</p>
+    <p class="about-p">At Exta Archis, I built a national network of more than 700 architects and interior designers across France. Each one activated, informed and connected to the right brands for the right projects. In practice, this network functioned exactly like an extended distribution channel &mdash; a system of prescribers that naturally feeds both retail and hospitality markets. This experience directly connects to what Serax already has in France: a strong retail network of around 600 partners that does not need to be reinvented, but activated and strengthened.</p>
+    <p class="about-p">Earlier in my career, at BCD Travel and CWT, I worked in structured international organizations where stability and execution mattered as much as strategy. I inherited teams under pressure, stabilized operations, retained key clients and coordinated commercial activity across multiple markets. These experiences taught me how to enter an existing organization, understand it quickly, build trust with teams and partners, and move things forward without disrupting what already works.</p>
+    <p class="about-quote">I do not arrive with a transformation agenda. I arrive with the experience to know what must be protected, the judgment to know where to push, and the discipline to execute consistently over time.</p>
   </div>
 </section>
 
@@ -494,7 +492,7 @@ body.emode [data-ed]:focus{outline:2px solid #8B6B4A;background:rgba(201,185,154
     <div class="s-divider"></div>
   </div>
   <div class="cards-grid reveal visible">
-    <div class="card"><div class="card-n">01</div><h3 class="card-h">65+ designers. One consistent philosophy.</h3><p class="card-p">Serax is not a manufacturer - it’s a creative ecosystem. From Ann Demeulemeester to Yotam Ottolenghi, Marni to Kelly Wearstler, each collection carries a story. The commercial role is to translate that story into commercial reality, market after market.</p><span class="card-tag">Brand DNA</span></div>
+    <div class="card"><div class="card-n">01</div><h3 class="card-h">60+ designers. One consistent philosophy.</h3><p class="card-p">Serax is not a manufacturer - it’s a creative ecosystem. From Ann Demeulemeester to Yotam Ottolenghi, Marni to Kelly Wearstler, each collection carries a story. The commercial role is to translate that story into commercial reality, market after market.</p><span class="card-tag">Brand DNA</span></div>
     <div class="card"><div class="card-n">02</div><h3 class="card-h">France is a top- market - and in growth.</h3><p class="card-p">Alongside the Netherlands and Germany, France is explicitly cited in 2025 as a growing market . With around 600 retail points already active, the network exists. The mission is to deepen it, activate the Living Lab concept, and convert presence into performance.</p><span class="card-tag">Market Position</span></div>
     <div class="card"><div class="card-n">03</div><h3 class="card-h">Two strategic ambitions, running in parallel.</h3><p class="card-p">Serax is simultaneously anchoring retail leadership via the blended shopping Living Lab model, and building its global hospitality capabilities.</p><span class="card-tag">Strategic Moment</span></div>
   </div>
@@ -508,7 +506,7 @@ body.emode [data-ed]:focus{outline:2px solid #8B6B4A;background:rgba(201,185,154
   <div class="ch-list reveal visible">
     <div class="ch-item"><div class="ch-idx">01</div><div class="ch-text">Consolidate, activate execute the strategy and expand the existing retail network and work closely the with the Hospitality team</div><div class="ch-note">Living Lab deployment in France<br><br></div></div>
     <div class="ch-item"><div class="ch-idx">02</div><div class="ch-text">Empower and support the team commercial reps + 1 agent who need direction, not disruption to deploy the strategy.</div><div class="ch-note">Stability as the priority<br><br></div></div>
-    <div class="ch-item"><div class="ch-idx">03</div><div class="ch-text">Develop the gifting channel - B2B corporate low investment, quick wins needed.</div><div class="ch-note">Go-to-market construction<br>Network activation</div></div>
+    <div class="ch-item"><div class="ch-idx">03</div><div class="ch-text">Develop the gifting channel - B2B corporate, quick wins needed.</div><div class="ch-note">Go-to-market construction<br>Network activation</div></div>
     <div class="ch-item"><div class="ch-idx">04</div><div class="ch-text">
 
 
@@ -530,16 +528,25 @@ body.emode [data-ed]:focus{outline:2px solid #8B6B4A;background:rgba(201,185,154
     <div class="obj-left"><p class="obj-lbl">The objection</p><p class="obj-quote">“I don’t come from retail. 75% of our French business is retail. How will I manage the retail of about 600+ points of sale?”</p></div>
     <div>
       <div class="resp-step"><div class="step-dot">I</div><div><h4 class="step-h">Acknowledge</h4><p class="step-p">You’re right - I haven’t managed a 600-store retail network directly. That’s a fair observation and I won’t sidestep it.</p></div></div>
-      <div class="resp-step"><div class="step-dot">II</div><div><h4 class="step-h">The bridge</h4><p class="step-p">But here’s what I know about your 600 retailers: most were introduced to Serax by an architect, a designer, or a decorator. That’s exactly the network I’ve spent 4 years building at Exta Archis - 700+ A&amp;D professionals who specify products, influence purchasing decisions, and bridge design culture with commercial reality.</p></div></div>
+      <div class="resp-step"><div class="step-dot">II</div><div><h4 class="step-h">Design Prescription and Retail Dynamics</h4><p class="step-p">Retail is clearly the backbone of Serax&rsquo;s business. My expertise sits slightly upstream, within the design community and the dynamics of prescription that often shape project demand.<br><br>At Exta Archis, I spent more than five years building and activating a network of 700+ architects and interior designers across France. Working with this community gave me a strong understanding of how products become specified within projects and how that influence ultimately drives clients toward the right retail partners and points of sale.</p></div></div>
       <div class="resp-step"><div class="step-dot">III</div><div><h4 class="step-h">The conclusion</h4><p class="step-p">In a market where Serax retail is premium by definition - Le Bon Marché, Galeries Lafayette, Merci, concept stores - the language spoken is design, not distribution. My network doesn’t compete with your retail. <strong>It feeds it.</strong></p></div></div>
     </div>
   </div>
   <div class="bridge reveal visible">
-    <div class="b-node"><div class="b-lbl">My network</div><div class="b-val">700+<br>Architects &amp; Designers</div></div>
-    <div class="b-arrow">→</div>
-    <div class="b-node"><div class="b-lbl">They prescribe to</div><div class="b-val">Retail clients<br>+ Hospitality projects</div></div>
-    <div class="b-arrow">→</div>
-    <div class="b-node"><div class="b-lbl">Which feeds</div><div class="b-val">Both Serax<br>channels simultaneously</div></div>
+    <div class="b-node">
+      <div class="b-lbl">Understanding of Prescription &amp; Design Community</div>
+      <div class="b-val">A large community of architects and interior designers across France, and a deep understanding of how prescription works within design projects and product recommendations.</div>
+    </div>
+    <div class="b-arrow">&#8595;</div>
+    <div class="b-node">
+      <div class="b-lbl">Project Demand</div>
+      <div class="b-val">Design projects generate demand for furniture, objects, lighting and tableware.</div>
+    </div>
+    <div class="b-arrow">&#8595;</div>
+    <div class="b-node">
+      <div class="b-lbl">Supporting Serax distribution</div>
+      <div class="b-val">That demand flows through the appropriate channels &mdash; Retail partners &middot; Concept stores &middot; Hospitality procurement</div>
+    </div>
   </div>
 </section>
 <section id="preuves">
@@ -548,7 +555,7 @@ body.emode [data-ed]:focus{outline:2px solid #8B6B4A;background:rgba(201,185,154
     <h2 class="s-title">Four proofs,<br><em>not promises</em></h2>
     <div class="s-divider"></div>
   </div>
-  <div class="reveal">
+  <div class="reveal visible">
     <div class="tabs-bar">
       <button class="tab-btn active" onclick="showTab(0)">Team Stability</button>
       <button class="tab-btn" onclick="showTab(1)">Premium Retail</button>
@@ -556,9 +563,9 @@ body.emode [data-ed]:focus{outline:2px solid #8B6B4A;background:rgba(201,185,154
       <button class="tab-btn" onclick="showTab(3)">New Channels</button>
     </div>
     <div class="tab-pane active" id="tp0"><div class="proof-grid"><div><p class="proof-ch-lbl">Your challenge</p><div class="proof-ch-box">The role has seen recent changes. The team needs reassurance, not rebuilding. Continuity and trust must come first.</div></div><div><p class="proof-ev-lbl">My evidence</p><p class="proof-ev-p">At BCD Travel, I inherited a team of 10 and a P&amp;L under significant cost pressure. My response wasn’t to rebuild - it was to listen, clarify priorities, and let the team understand where we were going together. The team itself became the asset. Clients stayed because the people stayed.</p><div class="kpis"><div><div class="kpi-val">98%</div><div class="kpi-lbl">Client<br>retention rate</div></div><div><div class="kpi-val">+25%</div><div class="kpi-lbl">Revenue<br>growth</div></div><div><div class="kpi-val">0</div><div class="kpi-lbl">Voluntary<br>team departures</div></div></div></div></div></div>
-    <div class="tab-pane" id="tp1"><div class="proof-grid"><div><p class="proof-ch-lbl">Your challenge</p><div class="proof-ch-box">500+ premium retail points need activation, not administration. Each partner must tell the right Serax story - the right space, the right collections, the right narrative.</div></div><div><p class="proof-ev-lbl">My evidence</p><p class="proof-ev-p">Managing 130+ European suppliers at Exta Archis taught me that a network is only as strong as each partner’s ability to tell your story. I structured joint business plans, CRM tracking, and KPI frameworks with partners who had never worked that way. The Living Lab model - shop-in-shop, samples only, commission-based - requires commercial trust, partner education, and operational discipline. That’s exactly what I do.</p><div class="kpis"><div><div class="kpi-val">130+</div><div class="kpi-lbl">Supplier network<br>managed directly</div></div><div><div class="kpi-val">3</div><div class="kpi-lbl">First Living Lab<br>France targets ready</div></div></div></div></div></div>
-    <div class="tab-pane" id="tp2"><div class="proof-grid"><div><p class="proof-ch-lbl">Your challenge</p><div class="proof-ch-box">Reporting to the Global Retail Director, coordinating 4 Country Managers, aligning with hospitality, marketing, and product teams in Antwerp simultaneously.</div></div><div><p class="proof-ev-lbl">My evidence</p><p class="proof-ev-p">At CWT, I managed a multinational account across 13 countries with 12 FTEs, coordinating global functions, local operations, and executive stakeholders simultaneously. Matrix organizations are not a complexity I navigate - they’re the environment I perform in. The key is clear escalation paths, transparent reporting, and over-communication across time zones and functions.</p><div class="kpis"><div><div class="kpi-val">13</div><div class="kpi-lbl">Countries<br>coordinated</div></div><div><div class="kpi-val">12</div><div class="kpi-lbl">FTEs under<br>management</div></div><div><div class="kpi-val">20+</div><div class="kpi-lbl">Years in matrix<br>organizations</div></div></div></div></div></div>
-    <div class="tab-pane" id="tp3"><div class="proof-grid"><div><p class="proof-ch-lbl">Your challenge</p><div class="proof-ch-box">Build a B2B corporate gifting channel in France - from zero, with a constrained budget, in a new-to-category market.</div></div><div><p class="proof-ev-lbl">My evidence</p><p class="proof-ev-p">At Workforce Logiq, I launched a product with zero French market presence, zero brand awareness, and a lean team. The challenge wasn’t product - it was go-to-market construction: identifying the right entry points, building a short list of strategic targets, and closing before the organization doubted the investment. A €1M strategic contract in 18 months with no marketing budget. The gifting opportunity at Serax is the same muscle - applied to a brand people already love.</p><div class="kpis"><div><div class="kpi-val">€1M</div><div class="kpi-lbl">Contract from<br>zero base</div></div><div><div class="kpi-val">18</div><div class="kpi-lbl">Months to<br>first major win</div></div></div></div></div></div>
+    <div class="tab-pane" id="tp1"><div class="proof-grid"><div><p class="proof-ch-lbl">Your challenge</p><div class="proof-ch-box">600+ premium retail points need activation, not administration. Each partner must tell the right Serax story - the right space, the right collections, the right narrative.</div></div><div><p class="proof-ev-lbl">My evidence</p><p class="proof-ev-p">At Exta Archis, I onboarded and structured a large community of architects and interior designers on the platform. Many had never worked within a structured brand ecosystem before.<br><br>I introduced tools, project frameworks, and CRM tracking that helped them integrate brands into their projects in a more systematic way. What I learned is simple: a network performs when partners understand the brand, trust the model, and know how to present the product story.<br><br>Activating independent professionals around a brand narrative requires education, structure, and commercial clarity. That is exactly the dynamic needed to activate a premium retail network.</p><div class="kpis"><div><div class="kpi-val">700+</div><div class="kpi-lbl">Architects and interior<br>designers onboarded</div></div><div><div class="kpi-val">3x</div><div class="kpi-lbl">Revenue<br>growth</div></div></div></div></div></div>
+    <div class="tab-pane" id="tp2"><div class="proof-grid"><div><p class="proof-ch-lbl">Your challenge</p><div class="proof-ch-box">As Global Retail Director, you coordinate Country Managers, aligning with hospitality, marketing, and product teams in Antwerp simultaneously.</div></div><div><p class="proof-ev-lbl">My evidence</p><p class="proof-ev-p">At CWT, I managed a multinational account across 13 countries with 12 FTEs, coordinating global functions, local operations, and executive stakeholders simultaneously. This required working across both matrix and hierarchical structures, aligning global strategy with local execution.<br><br>Matrix organizations are not a complexity I navigate, they are the environment I perform in, through clear escalation paths, transparent reporting, and constant communication across functions and time zones.</p><div class="kpis"><div><div class="kpi-val">13</div><div class="kpi-lbl">Countries<br>coordinated</div></div><div><div class="kpi-val">12</div><div class="kpi-lbl">FTEs under<br>management</div></div><div><div class="kpi-val">15+</div><div class="kpi-lbl">Years in matrix<br>organizations</div></div></div></div></div></div>
+    <div class="tab-pane" id="tp3"><div class="proof-grid"><div><p class="proof-ch-lbl">Your challenge</p><div class="proof-ch-box">Build a B2B corporate gifting channel in France - from zero, with a constrained budget, in a new-to-category market.</div></div><div><p class="proof-ev-lbl">My evidence</p><p class="proof-ev-p">At Workforce Logiq, I led the market entry of the brand in France, launching the activity from zero presence and no brand awareness. The challenge was building the go-to-market strategy, identifying the right entry points within large organizations, and securing strategic B2B accounts.<br><br>Developing the gifting opportunity at Serax requires the same muscle, identifying the right corporate entry points and converting strategic accounts, but this time with the advantage of a brand people already know and appreciate.</p><div class="kpis"><div><div class="kpi-val">€1M</div><div class="kpi-lbl">Contract from<br>zero base</div></div><div><div class="kpi-val">18</div><div class="kpi-lbl">Months to<br>first major win</div></div></div></div></div></div>
   </div>
 </section>
 <section id="jours">
@@ -567,10 +574,10 @@ body.emode [data-ed]:focus{outline:2px solid #8B6B4A;background:rgba(201,185,154
     <h2 class="s-title">The first<br><em>90 days</em></h2>
     <div class="s-divider"></div>
   </div>
-  <div class="phases reveal">
+  <div class="phases reveal visible">
     <div class="phase"><div class="phase-period">Days 0 – 30</div><h3 class="phase-h">Listen before acting</h3><ul class="phase-items"><li class="phase-item">Individual meetings with all 3 commercial reps + agent - understand the real terrain, frustrations, and strengths</li><li class="phase-item">Deep dives with key retail accounts - what works, what doesn’t, what’s been promised</li><li class="phase-item">Alignment with Global Retail Director on France KPIs and priorities</li><li class="phase-item">Network cartography: top performers, at-risk accounts, under-exploited partners</li></ul><div class="phase-accent"></div></div>
     <div class="phase"><div class="phase-period">Days 30 – 60</div><h3 class="phase-h">Stabilize and prioritize</h3><ul class="phase-items"><li class="phase-item">Identify 10–15 retail accounts with strong untapped potential</li><li class="phase-item">First Living Lab candidate conversations in France (Paris / Lille pipeline)</li><li class="phase-item">Initial A&amp;D network activation - hospitality and gifting opportunities</li><li class="phase-item">Simple gifting B2B proposal - fast, budget-controlled, measurable</li></ul><div class="phase-accent"></div></div>
-    <div class="phase"><div class="phase-period">Days 60 – 90</div><h3 class="phase-h">Build for growth</h3><ul class="phase-items"><li class="phase-item">Present France 2025–2026 plan to leadership: retail + gifting + A&amp;D relays</li><li class="phase-item">CRM, reporting, and shared forecast operational with Antwerp</li><li class="phase-item">First concrete quick wins launched and measurable</li><li class="phase-item">Country Manager alignment on shared practices and synergies</li></ul><div class="phase-accent"></div></div>
+    <div class="phase"><div class="phase-period">Days 60 – 90</div><h3 class="phase-h">Build for growth</h3><ul class="phase-items"><li class="phase-item">Present France 2026–2027 plan to leadership: retail + Hospitality + gifting + A&amp;D relays</li><li class="phase-item">CRM, reporting, and shared forecast operational with Antwerp</li><li class="phase-item">First concrete quick wins launched and measurable</li><li class="phase-item">Country Manager alignment on shared practices and synergies</li></ul><div class="phase-accent"></div></div>
   </div>
 </section>
 <section id="cta">
@@ -579,7 +586,7 @@ body.emode [data-ed]:focus{outline:2px solid #8B6B4A;background:rgba(201,185,154
     <h2 class="cta-title">One conversation changed my understanding of Serax. <em>A second one</em> might change everything.</h2>
     <p class="cta-sub">I came into our interview knowing Serax as a design brand. I left understanding it as a commercial ecosystem with specific human and structural needs - and a clear window of opportunity in France. I’d welcome the chance to go further.</p>
     <div class="cta-btns">
-      <a href="mailto:terence.richard75@gmail.com" class="btn-p">Send an email</a>
+      <a href="/cdn-cgi/l/email-protection#9eeafbecfbf0fdfbb0ecf7fdf6ffecfaa9abdef9f3fff7f2b0fdf1f3" class="btn-p">Send an email</a>
       <a href="https://linkedin.com/in/terencerichard" class="btn-s" target="_blank" rel="noopener">LinkedIn</a>
       <a href="tel:+33658841085" class="btn-s">Call directly</a>
     </div>
@@ -593,6 +600,29 @@ body.emode [data-ed]:focus{outline:2px solid #8B6B4A;background:rgba(201,185,154
 
 
 
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
+<button id="edit-fab" title="Mode edition">&#9998;</button>
+<div id="edit-login">
+  <div class="elb">
+    <h2>Mode &Eacute;dition</h2>
+    <p class="sub">Entrez le mot de passe</p>
+    <input type="password" id="epw" placeholder="Mot de passe" autocomplete="off"/>
+    <button class="ebtn" id="epw-btn">Acc&eacute;der &rarr;</button>
+    <p class="elb-err" id="epw-err">Mot de passe incorrect</p>
+  </div>
+</div>
+<div id="edit-bar">
+  <div style="display:flex;align-items:center;">
+    <span class="eb-badge">&#9998; Mode Edition</span>
+    <span class="eb-hint">Cliquez sur n'importe quel texte pour modifier</span>
+  </div>
+  <div class="eb-right">
+    <button class="eb-btn eb-export" id="eb-export">&#11015; Telecharger index.html</button>
+    <button class="eb-btn eb-exit" id="eb-exit">Quitter</button>
+  </div>
+</div>
+<div id="exp-toast">Fichier export&eacute; !</div>
 
 <script>
 var navbar=document.getElementById('navbar');
@@ -609,10 +639,9 @@ if('IntersectionObserver' in window){
 }else{document.querySelectorAll('.reveal').forEach(function(r){r.classList.add('visible');});}
 function showTab(idx){document.querySelectorAll('.tab-btn').forEach(function(b,i){b.classList.toggle('active',i===idx);});document.querySelectorAll('.tab-pane').forEach(function(p,i){p.classList.toggle('active',i===idx);});}
 document.querySelectorAll('a[href^="#"]').forEach(function(a){a.addEventListener('click',function(e){var href=a.getAttribute('href');if(href==='#')return;var t=document.querySelector(href);if(t){e.preventDefault();t.scrollIntoView({behavior:'smooth'});}});});
-/* EDITOR */
 var PASS='serax2026';
 var fab=document.getElementById('edit-fab'),loginEl=document.getElementById('edit-login'),editBar=document.getElementById('edit-bar'),toast=document.getElementById('exp-toast'),epw=document.getElementById('epw');
-var EDS=['.hero-eyebrow','.hero-title','.hero-sub','.hero-scroll','.s-label','.s-title','.card-h','.card-p','.card-tag','.ch-text','.ch-note','.ch-verdict','.obj-quote','.step-h','.step-p','.b-lbl','.b-val','.proof-ch-box','.proof-ev-p','.kpi-val','.kpi-lbl','.phase-period','.phase-h','.phase-item','.cta-title','.cta-sub','.ft-name','.ft-note','.tab-btn','.nav-logo','h1','h2','h3','h4'];
+var EDS=['.hero-eyebrow','.hero-title','.hero-sub','.hero-scroll','.s-label','.s-title','.card-h','.card-p','.card-tag','.ch-text','.ch-note','.ch-verdict','.obj-quote','.step-h','.step-p','.b-lbl','.b-val','.proof-ch-box','.proof-ev-p','.kpi-val','.kpi-lbl','.phase-period','.phase-h','.phase-item','.cta-title','.cta-sub','.ft-name','.ft-note','.tab-btn','.nav-logo','.about-p','.about-quote','h1','h2','h3','h4'];
 function markEd(){EDS.forEach(function(sel){document.querySelectorAll(sel).forEach(function(el){if(!el.hasAttribute('data-ed')){el.setAttribute('data-ed','1');el.setAttribute('contenteditable','false');}});});}
 function enableEdit(){document.body.classList.add('emode');editBar.classList.add('show');fab.style.display='none';document.querySelectorAll('[data-ed]').forEach(function(el){el.setAttribute('contenteditable','true');});}
 function disableEdit(){document.body.classList.remove('emode');editBar.classList.remove('show');fab.style.display='';document.querySelectorAll('[data-ed]').forEach(function(el){el.setAttribute('contenteditable','false');});}
@@ -642,5 +671,5 @@ document.getElementById('eb-export').addEventListener('click',exportHTML);
 document.getElementById('eb-exit').addEventListener('click',disableEdit);
 markEd();
 </script>
-
-</body></html>
+</body>
+</html>
