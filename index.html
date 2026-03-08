@@ -101,7 +101,7 @@ section{padding:110px 48px;}
 .phase-h{font-family:'Cormorant Garamond',Georgia,serif;font-size:24px;font-weight:400;line-height:1.3;margin-bottom:28px;}
 .phase-items{list-style:none;display:flex;flex-direction:column;gap:13px;}
 .phase-item{font-size:13px;line-height:1.75;color:rgba(26,23,20,0.72);padding-left:14px;position:relative;}
-.phase-item::before{content:'4';position:absolute;left:0;color:var(--sand);font-size:10px;top:1px;}
+.phase-item::before{content:'-';position:absolute;left:0;color:var(--sand);font-size:10px;top:1px;}
 .phase-accent{position:absolute;bottom:0;left:0;right:0;height:2px;background:transparent;transition:background 0.4s;}
 .phase:hover .phase-accent{background:var(--sand);}
 #cta{background:var(--ink);color:var(--cream);text-align:center;padding:110px 48px;}
@@ -252,7 +252,7 @@ function showTab(idx){
     <div>
       <div class="resp-step"><div class="step-dot">I</div><div><h4 class="step-h">Acknowledge</h4><p class="step-p">You&rsquo;re right - I haven&rsquo;t managed a 600-store retail network directly. That&rsquo;s a fair observation and I won&rsquo;t sidestep it.</p></div></div>
       <div class="resp-step"><div class="step-dot">II</div><div><h4 class="step-h">Design Prescription and Retail Dynamics</h4><p class="step-p">Retail is clearly the backbone of Serax&rsquo;s business. My expertise sits slightly upstream - in the design and prescription community that feeds it. At Exta Archis, I spent more than five years building and activating a network of 700+ architects and interior designers across France. These professionals specify products, influence purchasing decisions, and drive demand into retail channels. Understanding how design prescription flows into retail is not adjacent to your challenge - it is at the center of it.</p></div></div>
-      <div class="resp-step"><div class="step-dot">III</div><div><h4 class="step-h">The conclusion</h4><p class="step-p">In a market where Serax retail is premium by definition - Le Bon March&eacute;, Galeries Lafayette, Merci, concept stores - the language spoken is design, not only distribution. My network doesn&rsquo;t compete with your retail. <strong>It feeds it.</strong></p></div></div>
+      <div class="resp-step"><div class="step-dot">III</div><div><h4 class="step-h">The conclusion</h4><p class="step-p">In a market where Serax retail is premium by definition - Le Bon March&eacute;, Galeries Lafayette, Merci, concept stores - the language spoken is design, not distribution. My network doesn&rsquo;t compete with your retail. <strong>It feeds it.</strong></p></div></div>
     </div>
   </div>
   <div class="bridge reveal visible">
@@ -321,7 +321,7 @@ function showTab(idx){
       <button class="btn-p" onclick="window.open('https://linkedin.com/in/terencerichard','_blank')">LinkedIn</button>
       <button class="btn-p" onclick="window.open('https://drive.google.com/file/d/1j4gC4lHRhNJtjueHh_Ahb4JmMIsaVaBt/view?usp=sharing','_blank')">Resume</button>
     </div>
-    <p style="margin-top:52px;font-family:'Cormorant Garamond',Georgia,serif;font-size:24px;font-style:italic;font-weight:300;color:rgba(245,240,232,0.55);line-height:1.7;max-width:620px;margin-left:auto;margin-right:auto;">&ldquo;Choosing the right flower pot, preparing the right soil, and creating the conditions for something to truly grow is something that deeply drives me.&rdquo;<br><span style="display:block;margin-top:14px;font-family:'Jost',sans-serif;font-size:12px;letter-spacing:0.22em;text-transform:uppercase;font-style:normal;color:rgba(245,240,232,0.35);">Terence Richard</span><span style="display:block;margin-top:10px;font-family:'Jost',sans-serif;font-size:14.5px;font-style:normal;color:rgba(245,240,232,0.45);letter-spacing:0.08em;">terence.richard75@gmail.com &nbsp;&middot;&nbsp; +33 6 58 84 10 85</span></p>
+    <p style="margin-top:52px;font-family:'Cormorant Garamond',Georgia,serif;font-size:24px;font-style:italic;font-weight:300;color:rgba(245,240,232,0.55);line-height:1.7;max-width:620px;margin-left:auto;margin-right:auto;">&ldquo;Choosing the right flower pot, preparing the right soil, and creating the conditions for something to truly grow is something that deeply drives me.&rdquo;<br><span style="display:block;margin-top:14px;font-family:'Jost',sans-serif;font-size:12px;letter-spacing:0.22em;text-transform:uppercase;font-style:normal;color:rgba(245,240,232,0.35);">Terence Richard</span><span style="display:block;margin-top:10px;font-family:'Jost',sans-serif;font-size:14.5px;font-style:normal;color:rgba(245,240,232,0.45);letter-spacing:0.08em;"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="a6d2c3d4c3c8c5c388d4cfc5cec7d4c29193e6c1cbc7cfca88c5c9cb">[email&#160;protected]</a> &nbsp;&middot;&nbsp; +33 6 58 84 10 85</span></p>
   </div>
 </section>
 
@@ -352,7 +352,7 @@ function showTab(idx){
 </div>
 <div id="exp-toast">Fichier export&eacute; !</div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 var navbar=document.getElementById('navbar');
 window.addEventListener('scroll',function(){navbar.classList.toggle('scrolled',window.scrollY>40);});
 var hamburger=document.getElementById('hamburger'),mobileMenu=document.getElementById('mobileMenu');
@@ -391,6 +391,4 @@ document.getElementById('epw-btn').addEventListener('click',function(){
   if(epw.value===PASS){loginEl.classList.remove('show');document.getElementById('epw-err').style.display='none';epw.value='';enableEdit();}
   else{document.getElementById('epw-err').style.display='block';epw.value='';epw.focus();}
 });
-epw.addEventListener('keydown',function(e){if(e.key==='Enter')document.getElementById('epw-btn').click();if(e.key==='Escape'){loginEl.classList.remove('show');epw.value='';document.getElementById('epw-err').style.display='none';}});
-loginEl.addEventListener('click',function(e){if(e.target===loginEl){loginEl.classList.remove('show');epw.value='';document.getElementById('epw-err').style.display='none';}});
-document.getElementById('e
+epw.addEventListener('keydown',function(e){if(e.key==='Enter')document.getElementById('epw-btn').click();if(e.key==='Escape'){loginEl.classList.remove('show');epw.value='';document.getElementById(
